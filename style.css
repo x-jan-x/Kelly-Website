@@ -29,8 +29,34 @@
   --icon-opacity: 0.45;
 
   /* BADGES */
-  --badge-bg: var(--text-main);
-  --badge-text: #ffffff;
+  --badge-bg: #3a312d;
+  --badge-text: #fffaf7;
+
+  /* =========================================
+     UNDER CONSTRUCTION (COCOA MONOCHROME)
+     ========================================= */
+  /* Warm gray (very slight cocoa) */
+  --uc-bg: #f0eeec;
+  --uc-border: rgba(60, 50, 45, 0.22);
+  --uc-shadow: 0 8px 24px rgba(35, 29, 26, 0.08);
+
+  /* IMPORTANT: no gradient overlay (prevents some cards from looking 'different') */
+  --uc-overlay: rgba(60, 50, 45, 0.035);
+
+  /* Titles: essentially solid cocoa-gray (keeps your gradient-text technique intact) */
+  --uc-title-gradient: linear-gradient(
+    to right,
+    rgba(60, 50, 45, 0.58),
+    rgba(60, 50, 45, 0.58)
+  );
+
+  /* Pattern inks (used by patterned cards when disabled) */
+  --uc-grid-line: rgba(60, 50, 45, 0.08);
+  --uc-stripe-a: rgba(240, 238, 236, 1);
+  --uc-stripe-b: rgba(233, 230, 227, 0.70);
+
+  /* Minor UI accents (arrows etc.) */
+  --uc-accent: rgba(60, 50, 45, 0.38);
 }
 
 /* Allow browser UI to respect user scheme (forms/scrollbars), while your CSS controls the page */
@@ -66,49 +92,63 @@ body {
   justify-content: flex-start;
 }
 
+/* =========================================
+   2B. LINKS
+   ========================================= */
 a {
   text-decoration: none;
   color: inherit;
   display: flex;
+}
 
-  /* No underlines anywhere by default (all link states) */
 a:link,
-a:visited,
-a:hover,
-a:active,
-a:focus {
+ a:visited,
+ a:hover,
+ a:active,
+ a:focus {
   text-decoration: none;
 }
 
 /* Hard guarantee for clickable cards (your <a class="card ..."> elements) */
 a.card,
-a.card:link,
-a.card:visited,
-a.card:hover,
-a.card:active,
-a.card:focus {
+ a.card:link,
+ a.card:visited,
+ a.card:hover,
+ a.card:active,
+ a.card:focus {
   text-decoration: none !important;
 }
 
 /* If you ever want an underline, opt-in explicitly */
 .u-underline { text-decoration: underline !important; }
 
-/* Accessibility: keep a clear focus indicator without underlines */
+/* Accessibility: clear focus indicator without underlines */
 a.card:focus-visible {
   outline: 3px solid var(--accent-pink);
   outline-offset: 4px;
   border-radius: 24px;
 }
 
-}
-
 /* =========================================
    3. BASE CARD PHYSICS (Shared Styles)
    ========================================= */
 .card {
-  background-color: var(--card-bg);
-  border: 2px solid var(--card-border);
-  box-shadow: var(--card-shadow);
+  /* Surface tokens (default = normal card theme) */
+  --surface-bg: var(--card-bg);
+  --surface-border: var(--card-border);
+  --surface-shadow: var(--card-shadow);
+  --surface-overlay: transparent;
+  --title-gradient: linear-gradient(to right, var(--accent-pink), var(--accent-peach));
+
+  /* Optional per-card pattern inks (only used by cards that reference them) */
+  --grid-line: rgba(255, 134, 182, 0.10);
+  --stripe-a: rgba(255, 246, 238, 1);
+  --stripe-b: rgba(255, 224, 235, 0.285);
+
+  background-color: var(--surface-bg);
+  border: 2px solid var(--surface-border);
+  box-shadow: var(--surface-shadow);
+
   border-radius: 24px;
   padding: 20px;
 
@@ -119,13 +159,29 @@ a.card:focus-visible {
 
   position: relative;
   overflow: hidden;
+  isolation: isolate;
+
   color: var(--text-main);
 }
 
+/* Tint layer (used mainly by disabled state). Must sit behind content. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--surface-overlay);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .card h3 {
+  position: relative;
+  z-index: 2;
+
   font-weight: 800;
   margin: 0 0 5px 0;
-  background: linear-gradient(to right, var(--accent-pink), var(--accent-peach));
+
+  background: var(--title-gradient);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -140,8 +196,23 @@ a.card:focus-visible {
   color: var(--text-main);
   margin: 0;
   line-height: 1.4;
+
   z-index: 2;
   position: relative;
+}
+
+/* Ensure common content wrappers render above overlay */
+.card .card-content,
+.card .shop-content,
+.card .shop-arrow {
+  position: relative;
+  z-index: 2;
+}
+
+/* Video content must sit above overlay */
+.card iframe {
+  position: relative;
+  z-index: 1;
 }
 
 .card:hover {
@@ -288,13 +359,16 @@ a.card:focus-visible {
 /* WORK WITH ME */
 .card-contact {
   grid-column: span 2;
-  background-color: var(--bg-light);
-  background-image:
-    linear-gradient(rgba(255, 134, 182, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 134, 182, 0.1) 1px, transparent 1px);
-  background-size: 20px 20px;
 
-  border: 2px solid var(--accent-pink);
+  /* Use surface tokens so disabled state can override cleanly */
+  --surface-bg: var(--bg-light);
+  --surface-border: var(--accent-pink);
+  --grid-line: rgba(255, 134, 182, 0.10);
+
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
 .card-contact .card-content {
@@ -334,21 +408,27 @@ a.card:focus-visible {
 /* SHOP */
 .card-shop {
   grid-column: span 3;
-  background-color: var(--bg-light);
+
+  /* Use surface tokens so disabled state can override cleanly */
+  --surface-bg: var(--bg-light);
+  --surface-border: var(--accent-pink);
+  --stripe-a: rgba(255, 246, 238, 1);
+  --stripe-b: rgba(255, 224, 235, 0.285);
+  --shop-arrow: var(--accent-pink);
+
   background-image: repeating-linear-gradient(
     -45deg,
-    rgba(255, 246, 238, 1),
-    rgba(255, 246, 238, 1) 20px,
-    rgba(255, 224, 235, 0.281) 20px,
-    rgba(255, 224, 235, 0.288) 40px
+    var(--stripe-a),
+    var(--stripe-a) 20px,
+    var(--stripe-b) 20px,
+    var(--stripe-b) 40px
   );
-  border: 2px solid var(--accent-pink);
 }
 
 .card-shop .shop-arrow {
   align-self: flex-end;
   font-size: 2rem;
-  color: var(--accent-pink);
+  color: var(--shop-arrow);
   transition: transform 0.3s ease;
   margin-top: auto;
 }
@@ -358,14 +438,45 @@ a.card:focus-visible {
 /* =========================================
    6. STATES (Live, Disabled, Etc)
    ========================================= */
+
+/* Homogenized, token-driven disabled state */
 .card.disabled {
-  filter: grayscale(0.8) opacity(0.7);
   pointer-events: none;
   cursor: default;
   transform: none !important;
-  box-shadow: none !important;
-  border-color: #ddd !important;
+
+  /* Unified palette via tokens */
+  filter: none;
+  opacity: 0.65;
+
+  --surface-bg: var(--uc-bg);
+  --surface-border: var(--uc-border);
+  --surface-shadow: var(--uc-shadow);
+  --surface-overlay: var(--uc-overlay);
+  --title-gradient: var(--uc-title-gradient);
+
+  /* Recolor tokenized patterns */
+  --grid-line: var(--uc-grid-line);
+  --stripe-a: var(--uc-stripe-a);
+  --stripe-b: var(--uc-stripe-b);
+
+  /* Monochrome icon treatment */
+  --icon-filter: grayscale(1) brightness(0.72) contrast(0.9);
+  --icon-opacity: 0.18;
+
+  /* Minor UI accents */
+  --shop-arrow: var(--uc-accent);
 }
+
+/* Extra “faded cocoa” text tuning for disabled cards */
+.card.disabled p { color: rgba(60, 50, 45, 0.78); }
+.card.disabled h3 { opacity: 0.88; }
+.card.disabled .cta-text { color: rgba(60, 50, 45, 0.56); }
+.card.disabled .shop-arrow { opacity: 0.60; }
+
+/* If you ever want Patreon to be 100% untinted, uncomment:
+   #card-patreon.disabled { --surface-overlay: transparent; }
+*/
 
 .coming-soon-badge {
   position: absolute;
@@ -380,8 +491,9 @@ a.card:focus-visible {
   font-size: 0.9rem;
   white-space: nowrap;
   z-index: 100;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  border: 2px solid rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.04em;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+  border: 2px solid rgba(255, 250, 247, 0.92);
 }
 
 .live-badge {
@@ -499,8 +611,25 @@ a.card:focus-visible {
     --icon-filter: invert(74%) sepia(80%) saturate(466%) hue-rotate(306deg) brightness(100%) contrast(101%);
     --icon-opacity: 0.45;
 
-    --badge-bg: var(--text-main);
-    --badge-text: #ffffff;
+    --badge-bg: #3a312d;
+    --badge-text: #fffaf7;
+    /* Keep UC tokens available in dark mode as well */
+    --uc-bg: #f0eeec;
+    --uc-border: rgba(60, 50, 45, 0.22);
+    --uc-shadow: 0 8px 24px rgba(35, 29, 26, 0.08);
+
+    --uc-overlay: rgba(60, 50, 45, 0.035);
+
+    --uc-title-gradient: linear-gradient(
+      to right,
+      rgba(60, 50, 45, 0.58),
+      rgba(60, 50, 45, 0.58)
+    );
+
+    --uc-grid-line: rgba(60, 50, 45, 0.08);
+    --uc-stripe-a: rgba(240, 238, 236, 1);
+    --uc-stripe-b: rgba(233, 230, 227, 0.70);
+    --uc-accent: rgba(60, 50, 45, 0.38);
   }
 }
 
