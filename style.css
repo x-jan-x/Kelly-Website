@@ -566,16 +566,16 @@ a.card:focus-visible {
   }
 
   /* Mobile sequence (supports id or class for these cards) */
-  .card-video { order: 1; }
-  .card-bio { order: 2; }
+  .card-video { order: 2; }
+  .card-bio { order: 1; }
   #side-stage { order: 3; }
 
   .card-discord, #card-discord { order: 4; }
   .card-twitter, #card-twitter { order: 5; }
   .card-insta,   #card-insta   { order: 6; }
-  .card-patreon, #card-patreon { order: 7; }
+  .card-patreon, #card-patreon { order: 8; }
 
-  .card-contact { order: 8; }
+  .card-contact { order: 7; }
   .card-shop { order: 9; }
 
   .ghost-footer {
