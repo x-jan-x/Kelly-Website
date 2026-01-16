@@ -1,22 +1,76 @@
 /* =========================================
-   1. CONFIGURATION
+   1. MASTER CONTROL (Feature Flags)
+   ========================================= */
+const featureFlags = {
+    bio:        true,  
+    mainStage:  true,  
+    sideStage:  true,  
+    twitter:    true,
+    instagram:  true,
+    discord:    true,
+    contact:    true,  
+    patreon:    false, // DISABLED: Will show "Coming Soon"
+    shop:       false  // DISABLED: Will show "Coming Soon"
+};
+
+// Map IDs to the flags above
+const cardMap = {
+    'card-bio':     featureFlags.bio,
+    'main-stage':   featureFlags.mainStage,
+    'side-stage':   featureFlags.sideStage,
+    'card-twitter': featureFlags.twitter,
+    'card-insta':   featureFlags.instagram,
+    'card-discord': featureFlags.discord,
+    'card-contact': featureFlags.contact,
+    'card-patreon': featureFlags.patreon,
+    'card-shop':    featureFlags.shop
+};
+
+/* =========================================
+   2. CONFIGURATION
    ========================================= */
 const twitchUsername = "kellynicole515"; 
 const youtubePlaylistID = "PLyKbTGUD1Bdc2ZAY9fqmBeNmEC4A5hSE2"; 
-
-// DOMAIN CONFIGURATION
-// For testing: use "localhost"
-// For live: use "kellynicole-linkinbio.netlify.app" (or your custom domain)
-const parentDomain = "www.kellynicole.net"; 
+const parentDomain = "kellynicole.net"; // UPDATED for your live site
 
 // API Endpoint
 const uptimeUrl = `https://decapi.me/twitch/uptime/${twitchUsername}`;
 
 /* =========================================
-   2. CONTENT DEFINITIONS
+   3. LOGIC & INITIALIZATION
    ========================================= */
+
+// A. Apply Feature Flags (Disable cards if needed)
+function applyFeatureFlags() {
+    for (const [id, isActive] of Object.entries(cardMap)) {
+        if (!isActive) {
+            disableCard(id);
+        }
+    }
+}
+
+function disableCard(elementId) {
+    const card = document.getElementById(elementId);
+    if (!card) return;
+
+    // Visuals
+    card.classList.add('disabled');
+    
+    // Interactions
+    card.removeAttribute('href');
+    card.style.pointerEvents = "none";
+    card.style.cursor = "default";
+
+    // Badge
+    if (!card.querySelector('.coming-soon-badge')) {
+        card.insertAdjacentHTML('beforeend', `
+            <div class="coming-soon-badge">COMING SOON</div>
+        `);
+    }
+}
+
+// B. Content Definitions
 const contentMain = {
-    // SCENARIO A: You are LIVE -> Show Twitch Player
     online: `
         <iframe 
             src="https://player.twitch.tv/?channel=${twitchUsername}&parent=${parentDomain}&muted=false" 
@@ -24,7 +78,6 @@ const contentMain = {
         </iframe>
         <div class="live-badge">🔴 LIVE NOW</div>
     `,
-    // SCENARIO B: You are OFFLINE -> Show YouTube Playlist
     offline: `
         <iframe 
             width="100%" height="100%" 
@@ -35,7 +88,6 @@ const contentMain = {
 };
 
 const contentSide = {
-    // SCENARIO A: LIVE -> Side Button is YouTube
     online: {
         link: "https://youtube.com/@KellyNicole515",
         html: `
@@ -46,7 +98,6 @@ const contentSide = {
             <img src="https://cdn.simpleicons.org/youtube/white" class="card-icon">
         `
     },
-    // SCENARIO B: OFFLINE -> Side Button is Twitch
     offline: {
         link: `https://twitch.tv/${twitchUsername}`,
         html: `
@@ -59,9 +110,7 @@ const contentSide = {
     }
 };
 
-/* =========================================
-   3. THE BRAIN (Logic)
-   ========================================= */
+// C. Status Check (The Brain)
 async function initStatusCheck() {
     const mainStage = document.getElementById('main-stage');
     const sideStage = document.getElementById('side-stage');
@@ -70,46 +119,46 @@ async function initStatusCheck() {
     render(false);
 
     try {
-        console.log("Checking live status...");
         const response = await fetch(uptimeUrl);
         const data = await response.text();
 
         if (!data.includes("offline")) {
-            console.log("Status: LIVE! Swapping content.");
             render(true); 
-        } else {
-            console.log("Status: Offline.");
-        }
+        } 
     } catch (error) {
         console.error("API Error:", error);
     }
 
     function render(isLive) {
-        if (isLive) {
-            mainStage.innerHTML = contentMain.online;
-            mainStage.classList.add("is-live"); 
-            
-            sideStage.href = contentSide.online.link;
-            sideStage.innerHTML = contentSide.online.html;
-            sideStage.classList.remove("card-discord"); 
-        } else {
-            mainStage.innerHTML = contentMain.offline;
-            mainStage.classList.remove("is-live");
-            
-            sideStage.href = contentSide.offline.link;
-            sideStage.innerHTML = contentSide.offline.html;
+        // SAFETY: Do not touch cards if they are disabled via Feature Flags
+        if (featureFlags.mainStage) {
+            if (isLive) {
+                mainStage.innerHTML = contentMain.online;
+                mainStage.classList.add("is-live"); 
+            } else {
+                mainStage.innerHTML = contentMain.offline;
+                mainStage.classList.remove("is-live");
+            }
+        }
+
+        if (featureFlags.sideStage) {
+            if (isLive) {
+                sideStage.href = contentSide.online.link;
+                sideStage.innerHTML = contentSide.online.html;
+                sideStage.classList.remove("card-discord"); 
+            } else {
+                sideStage.href = contentSide.offline.link;
+                sideStage.innerHTML = contentSide.offline.html;
+            }
         }
     }
 }
 
-// Run immediately
+// Run everything
+applyFeatureFlags();
 initStatusCheck();
-
-// Check again every 5 minutes
 setInterval(initStatusCheck, 300000);
 
-/* =========================================
-   4. FOOTER YEAR UPDATE
-   ========================================= */
+// Footer Year
 const date = new Date();
 document.getElementById("year").textContent = date.getFullYear();
