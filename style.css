@@ -1,0 +1,570 @@
+:root {
+    /* 1. STRAWBERRY MILK PALETTE */
+    --bg-light: #fff6ee;      /* Creamy White (Main Background) */
+    --card-bg: #ffffff;       /* Pure White (Card Background) */
+    --text-main: #4b3a32;     /* Warm Dark Brown (Text - softer than black) */
+    --text-muted: #8d7b72;    /* Lighter Brown (Subtitles) */
+    
+    /* 2. ACCENTS (From your palette) */
+    --accent-pink: #ff86b6;   /* The "Cute" pop color */
+    --accent-blue: #bfe8ff;   /* Soft Sky Blue */
+    --accent-peach: #ffb38a;  /* Peach for borders/hovers */
+    --accent-lightpeach: #ffe8dc;  /* Peach for borders/hovers */
+    
+    /* 3. SOFT GRADIENT */
+    /* A very subtle, dreamy pink-to-cream fade */
+    --bg-gradient: linear-gradient(135deg, #fff6ee 0%, #ffeaf2 100%);
+}
+
+body {
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-main);
+    font-family: 'Quicksand', 'Varela Round', sans-serif;
+    
+    /* FLEXBOX CENTERING MAGIC */
+    display: flex;
+    flex-direction: column; /* <--- ADD THIS LINE (Stacks items vertically) */
+    justify-content: center; /* Center Horizontal (Left/Right) */
+    align-items: center;     /* Center Vertical (Top/Bottom) */
+    
+    min-height: 100vh; /* Force body to be at least as tall as the screen */
+    margin: 0; /* Remove default browser margins */
+    padding: 20px; /* Safety padding for mobile screens */
+}
+/* 2. CARD STYLING (The Boxes) */
+.card {
+    /* STICKER / CARD LOOK */
+    background-color: var(--card-bg);
+    
+    /* Cute, soft border (Peach) */
+    border: 2px solid #ffe8dc; 
+    
+    /* Soft, dreamy shadow (Pinkish) */
+    box-shadow: 0 8px 24px rgba(255, 134, 182, 0.15); 
+    
+    border-radius: 24px; /* Keep the bubbly corners */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease-in-out;
+    color: var(--text-main); /* Ensure text is dark brown */
+}
+/* UNIFIED CARD SUBTITLES */
+/* Forces "Work With Me", "Shop", and Socials to share the exact same font style */
+.card p {
+    font-family: 'Quicksand', sans-serif; 
+    font-size: 0.95rem;      
+    font-weight: 600;        /* Bold enough to read on patterns */
+    color: var(--text-main); /* Force Dark Brown */
+    margin: 0;               
+    line-height: 1.4;        
+}
+
+/* Ensure the Shop text matches this rule */
+.shop-content p {
+    font-weight: 600; 
+}
+/* HOVER: The card "pops" up */
+.card:hover {
+    transform: translateY(-5px) scale(1.02); /* Little bounce */
+    border-color: var(--accent-pink); /* Border turns Pink */
+    box-shadow: 0 12px 30px rgba(255, 134, 182, 0.3); /* Shadow gets deeper */
+}
+/* HOVER STATE: The Card lights up */
+/* SOFTENED HOVER STATE */
+.card:hover {
+    transform: translateY(-5px) scale(1.02);
+    /* Instead of solid pink, we use 40% opacity pink for the border */
+    border-color: rgba(255, 134, 182, 0.4); 
+    /* We make the shadow larger but much lighter (20% opacity) */
+    box-shadow: 0 15px 35px rgba(255, 134, 182, 0.2); 
+}
+
+
+/* 3. THE BENTO GRID LAYOUT */
+.bento-container {
+    display: grid;
+    /* Create 4 equal columns */
+    grid-template-columns: repeat(4, 1fr); 
+    /* Create rows that are exactly 200px tall */
+    grid-auto-rows: 200px; 
+    /* Gap between cards */
+    gap: 20px; 
+    /* Max width of the whole website */
+    max-width: 1000px; 
+    width: 100%;
+    margin: auto;
+}
+
+/* 4. SPECIFIC CARD SIZES (The Logic) */
+
+/* Video: 2 columns wide, 2 rows tall */
+.card-video {
+    grid-column: span 2;
+    grid-row: span 2;
+    overflow: hidden; /* Crops the image to fit the rounded corners */
+    padding: 0; /* Remove padding so image touches edges */
+    position: relative;
+}
+
+/* Bio: 1 column wide, 2 rows tall */
+.card-bio {
+    grid-column: span 1;
+    grid-row: span 2;
+    background-color: #2d2d2d; /* Make this one pop slightly */
+}
+
+/* REFINED WORK WITH ME CARD (Planner Grid Edition) */
+.card-contact {
+    grid-column: span 2;
+    
+    /* 1. BASE COLOR: Cream */
+    background-color: #fff6ee;
+    
+    /* 2. THE GRID PATTERN: Creates a 20px graph paper look */
+    background-image:
+        linear-gradient(rgba(255, 134, 182, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 134, 182, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    
+    /* 3. BORDER: Matches the Shop Card */
+    border: 2px solid var(--accent-pink); 
+    
+    /* ... keep your shadow, color, overflow, etc ... */
+    box-shadow: 0 8px 24px rgba(255, 134, 182, 0.25);
+    color: var(--text-main);
+    position: relative;
+    overflow: hidden;
+}
+
+/* NEW: Force the inner content to fill the card height */
+.card-contact .card-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+/* Hover: Lift up and glow */
+.card-contact:hover {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 15px 35px rgba(255, 134, 182, 0.4);
+}
+
+/* UPDATED: Target the new class instead of an 'a' tag */
+.card-contact .cta-text {
+    color: #d63384; /* Deep Pink */
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    
+    /* MAINTAIN THE POSITIONING FIX */
+    margin-top: auto; 
+    align-self: flex-start;
+}
+/* Socials are 1x1 by default, so we don't need special code for them! */
+
+/* 5. UTILITY & CONTENT */
+.video-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image covers the box without stretching */
+    opacity: 0.6; /* Dims the image slightly */
+}
+
+.card-label {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: black;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+    color: inherit; /* Inherit color from the card */
+    font-weight: bold;
+}
+
+/* GHOST FOOTER - FIXED */
+.ghost-footer {
+    position: static;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    pointer-events: none; /* Clicks pass through it */
+    
+    /* CHANGE: Remove 'z-index: -1' or set it to 10 */
+    z-index: 10; /* Force it to sit ON TOP of the background */
+}
+
+.ghost-footer p {
+    font-size: 0.75rem;
+    color: var(--text-main); /* Use the main brown color so it's readable */
+    opacity: 0.3; /* 30% visible = Subtle */
+    font-weight: 500;
+}
+
+/* Responsive: On phones, stack everything in 1 column */
+@media (max-width: 768px) {
+    .bento-container {
+        grid-template-columns: 1fr; /* Force 1 column */
+        grid-auto-rows: auto; /* Let height be determined by content */
+    }
+    
+    .card-video, .card-bio, .card-contact {
+        grid-column: span 1; /* Reset everyone to 1 column width */
+        grid-row: span 1; /* Reset grid rows */
+    }
+    
+    /* FIX 1: Force the Video Card to stay visible */
+    .card-video {
+        height: 250px; 
+        min-height: 250px;
+    }
+
+    /* FIX 2: Force the Bio Card (Photo) to stay visible */
+    /* Since the photo is absolute, we MUST give the card a fixed height */
+    .card-bio {
+        height: 400px; /* Make it a tall vertical portrait */
+        min-height: 400px;
+    }
+
+    /* FIX 3: Add space between stacked cards */
+    .card {
+        margin-bottom: 0px; /* Grid gap handles this usually, but good for safety */
+    }
+/* 5. ORDERING (Your requested Sequence) */
+    .card-video              { order: 2; }
+    .card-bio                { order: 1; }
+    #side-stage              { order: 3; } /* Twitch/YT Button */
+    .card-discord            { order: 4; }
+    a[href*="x.com"]         { order: 5; } 
+    a[href*="instagram.com"] { order: 6; }
+    a[href*="patreon.com"]   { order: 7; }
+    .card-contact            { order: 8; }
+    .card-shop               { order: 9; }  
+} /* <--- This is the closing bracket for the @media block */
+/* FORCE LINKS TO BE BOXES */
+a.card {
+    display: flex; /* Ensures the flexbox layout inside the card works */
+    text-decoration: none; /* Double check: removes blue underlines */
+    color: inherit; /* Ensures text stays white/grey */
+}
+
+/* 6. SOCIAL BRANDING (The Watermark Effect) */
+
+/* First, ensure the card can handle absolute positioning */
+.card-social {
+    position: relative; /* Keeps the icon trapped inside the box */
+    overflow: hidden; /* Cuts off the icon if it gets too big */
+}
+
+/* Style the text wrapper so it sits ON TOP of the icon */
+.card-content {
+    z-index: 2; /* Higher number = closer to the user */
+    position: relative;
+}
+
+/* Style the Icon (The Asset) */
+/* Update the Big Watermark Icon */
+.card-icon {
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    width: 120px;
+    height: 120px;
+    
+    /* CHANGE: Make it Pink but see-through */
+    filter: invert(74%) sepia(80%) saturate(466%) hue-rotate(306deg) brightness(100%) contrast(101%);
+    opacity: 0.45; /* Subtle pink watermark */
+    
+    transform: rotate(-15deg);
+    transition: all 0.3s ease;
+}
+
+/* Hover Effect: When you touch the card, the icon glows */
+.card-social:hover .card-icon {
+    opacity: 0.3; /* Make it brighter */
+    transform: rotate(0deg) scale(1.1); /* Straighten and grow */
+}
+
+/* 7. UNIFIED COZY HOVERS */
+
+/* Base Rule: ALL cards get the Brand Pink border on hover */
+.card-social:hover {
+    border-color: var(--accent-pink) !important; /* Force Pink Border */
+    box-shadow: 0 12px 30px rgba(255, 134, 182, 0.25); /* Soft Pink Glow */
+    transform: translateY(-5px) scale(1.02);
+}
+
+/* --- SUBTLE TINTS (Background Only) --- */
+/* We use super faint versions of the brand colors so they don't clash */
+
+/* Twitch: Faint Lavender */
+.card-social:has(img[src*="twitch"]):hover {
+    background-color: #fdfaff; 
+}
+
+/* YouTube: Faint Rose */
+.card-social:has(img[src*="youtube"]):hover {
+    background-color: #fffafa; 
+}
+
+/* Instagram: Faint Pinkish-Purple */
+.card-social:has(img[src*="instagram"]):hover {
+    background-color: #fdf5fa;
+}
+
+/* X / Twitter: Faint Grey (Neutral) */
+.card-social:has(img[src*="x/white"]):hover {
+    background-color: #f8f8f8;
+}
+
+/* Discord: Faint Blue-ish White */
+.card-social:has(img[src*="discord"]):hover {
+    background-color: #f5f7ff;
+}
+
+/* Patreon: Faint Coral/Red */
+.card-social:has(img[src*="patreon"]):hover {
+    background-color: #fff5f5; 
+}
+
+/* BIO CARD - PORTRAIT MODE */
+.card-bio {
+    padding: 0; /* Remove padding so image touches the edge */
+    position: relative; /* Lock content inside */
+    overflow: hidden; /* Cut off excess image */
+    border: none; /* No border on the photo card looks cleaner */
+}
+
+/* The Photo */
+.bio-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures photo fills box without stretching */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Sits behind text */
+    transition: transform 0.5s ease;
+}
+
+/* The Text Wrapper (Scrim) */
+.bio-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px;
+    z-index: 2; /* Sits on top of image */
+    
+    /* GRADIENT FADE: Makes text readable on any photo */
+    /* Fades from clear to semi-transparent white/pink at the bottom */
+    background: linear-gradient(to top, rgba(75, 58, 50, 0.8), transparent);
+    color: white; /* Force text white for contrast against photo */
+}
+
+/* Fix the H2 gradient inside the photo card */
+.card-bio h2 {
+    background: none; /* Remove text gradient */
+    -webkit-text-fill-color: white; /* Make it solid white */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Drop shadow for readability */
+    margin-bottom: 5px;
+}
+
+.card-bio p {
+    color: white !important; /* Override the global Dark Brown rule */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6); /* Add a shadow so it pops against any background */
+    opacity: 0.9; 
+    font-weight: 600;
+}
+
+/* Zoom effect on hover */
+.card-bio:hover .bio-image {
+    transform: scale(1.05);
+}
+
+/* MAGICAL GRADIENT TITLES */
+.card h3 {
+    font-weight: 800; /* Make it thick so the gradient is visible */
+    
+    /* ADD THIS LINE: Removes the invisible browser spacing */
+    margin-top: 10;
+
+    /* The Magic Gradient: Deep Purple to Soft Blue */
+    background: linear-gradient(to right, #ff86b6, #ffb38a);
+    
+    /* Standard browser support for clipping text */
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    /* Make the text color transparent so the background shows through */
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    
+    margin-bottom: 5px;
+    display: inline-block; /* Required for gradients to render correctly on some browsers */
+}
+
+/* Exception: Keep the 'Work With Me' title solid so it feels more grounded */
+.card-contact h3 {
+    background: none;
+    -webkit-text-fill-color: var(--text-main);
+    color: var(--text-main);
+}
+
+
+
+/* BASE STATE (Resting) */
+.mascot-img {
+    position: absolute;
+    bottom: -10px; 
+    right: -10px;  
+    width: 100px;
+    height: auto;
+    
+    /* Mirrored (-1) and Tilted */
+    transform: scaleX(-1) rotate(-10deg); 
+    
+    opacity: 0.9;
+    transition: transform 0.3s ease;
+}
+
+/* HOVER STATE (Active) */
+.card-contact:hover .mascot-img {
+    /* HERE IS THE FIX: */
+    /* We use scale(-1.1, 1.1) to say:
+       X = -1.1 (Mirrored & 10% bigger)
+       Y =  1.1 (Just 10% bigger) */
+    transform: scale(-1.1, 1.1) rotate(0deg) translateY(-10px);
+}
+.mascot-img {
+    position: absolute;
+    bottom: -10px; /* Tuck him slightly down */
+    right: -10px;  /* Tuck him slightly right */
+    width: 100px;  /* Adjust size as needed */
+    height: auto;
+    transform: rotate(-10deg) scaleX(-1); /* Give him a cute tilt */
+    opacity: 0.9;
+    transition: transform 0.3s ease;
+}
+
+/* THE SHOP CARD (High Contrast Stripes) */
+/* THE SHOP CARD (Soft Texture Edition) */
+.card-shop {
+    grid-column: span 3;
+    
+    /* 1. TEXTURE: Super Subtle Stripes (High Legibility) */
+    background-color: #fff6ee; 
+    /* We use very faint pink (opacity 0.4) so text sits clearly on top */
+    background-image: repeating-linear-gradient(
+        -45deg, 
+        rgba(255, 246, 238, 1),        /* Cream */
+        rgba(255, 246, 238, 1) 20px,   /* Cream */
+        rgba(255, 224, 235, 0.281) 20px, /* Faint Pink */
+        rgba(255, 224, 235, 0.288) 40px  /* Faint Pink */
+    );
+    
+    border: 2px solid var(--accent-pink);
+    
+    /* Layout: Vertical (Standard) */
+    flex-direction: column; 
+    align-items: flex-start;
+    justify-content: space-between; 
+    padding: 20px; 
+}
+
+/* DELETE OR DISABLE THE .shop-content BUBBLE STYLES */
+/* We reset this to be invisible so the text just floats on the card */
+.shop-content {
+    background: none;        /* No white box */
+    backdrop-filter: none;   /* No blur */
+    border: none;            /* No border */
+    box-shadow: none;        /* No shadow */
+    padding: 0;              /* Remove padding */
+    max-width: 100%;
+}
+
+/* Ensure the Title is the standard Gradient style or Solid Pink */
+.shop-content h3 {
+    font-size: 1.1rem; 
+    color: #d63384; 
+    margin-bottom: 5px;
+}
+
+.shop-content p {
+    margin: 0;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Optional: Ensure the arrow sits in the bottom corner */
+.shop-arrow {
+    align-self: flex-end; /* Pushes arrow to the right */
+    font-size: 2rem;
+    color: var(--accent-pink);
+    transition: transform 0.3s ease;
+}
+
+/* Hover Effect */
+.card-shop:hover .shop-arrow {
+    transform: translateX(10px); /* Arrow points right */
+}
+
+/* MOBILE FIX: On phones, it should just be a normal square */
+@media (max-width: 768px) {
+    .card-shop {
+        grid-column: span 1; /* Back to 1 column */
+        height: 200;        /* Let it grow naturally */
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+}
+
+/* UNIFIED HOVER STATES */
+
+/* When hovering the Special Cards (Work & Shop), 
+   turn the border Deep Magenta instead of Dark Grey */
+.card-contact:hover, .card-shop:hover {
+    border-color: #d63384 !important; /* Deep Pink */
+    
+    /* Optional: Make the glow slightly stronger too */
+    box-shadow: 0 15px 40px rgba(214, 51, 132, 0.25); 
+}
+
+/* --- LIVE MODE ANIMATIONS --- */
+.card-video.is-live {
+    border-color: #ff4646 !important;
+    box-shadow: 0 0 30px rgba(255, 0, 0, 0.4) !important;
+    animation: pulse-red 2s infinite;
+    z-index: 5;
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+    50% { box-shadow: 0 0 40px rgba(255, 0, 0, 0.7); }
+    100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
+}
+
+.live-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #ff0000;
+    color: white;
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    z-index: 100; 
+    pointer-events: none; 
+}
